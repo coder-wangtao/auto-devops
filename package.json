@@ -1,0 +1,44 @@
+{
+  "name": "devops-automation-platform",
+  "version": "1.0.0",
+  "description": "运维自动化平台 - 基于JavaScript的现代化CI/CD平台",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm build:deps && pnpm --filter './packages/*' dev",
+    "build": "pnpm build:deps && pnpm --filter './packages/*' build",
+    "build:deps": "pnpm --filter @devops-automation/plugin-sdk build && pnpm --filter @devops-automation/core-engine build",
+    "test": "pnpm --filter './packages/*' test",
+    "lint": "pnpm --filter './packages/*' lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "clean": "pnpm --filter './packages/*' clean && pnpm --filter './plugins/*' clean",
+    "type-check": "pnpm --filter './packages/*' type-check",
+    "publish:plugin-sdk": "pnpm --filter @devops-automation/plugin-sdk publish",
+    "publish:core-engine": "pnpm --filter @devops-automation/core-engine publish",
+    "publish:all": "pnpm publish:plugin-sdk && pnpm publish:core-engine"
+  },
+  "keywords": [
+    "devops",
+    "ci-cd",
+    "automation",
+    "workflow",
+    "plugin-system"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
+
