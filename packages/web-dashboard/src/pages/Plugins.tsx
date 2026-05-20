@@ -41,11 +41,11 @@ const PluginDetail: React.FC<PluginDetailProps> = ({ visible, plugin, onClose, o
 
   const handleTest = async () => {
     if (!plugin) return;
-    
+
     try {
       const values = await form.validateFields();
       let config: Record<string, unknown> = {};
-      
+
       // 处理配置：如果是字符串则解析，否则直接使用
       if (values.config) {
         if (typeof values.config === 'string') {
@@ -57,7 +57,7 @@ const PluginDetail: React.FC<PluginDetailProps> = ({ visible, plugin, onClose, o
           config = values.config;
         }
       }
-      
+
       setTesting(true);
       await onTest(plugin.name, config);
     } catch (error: any) {
@@ -124,10 +124,7 @@ const PluginDetail: React.FC<PluginDetailProps> = ({ visible, plugin, onClose, o
                 },
               ]}
             >
-              <TextArea
-                rows={6}
-                placeholder='{"key": "value"}'
-              />
+              <TextArea rows={6} placeholder='{"key": "value"}' />
             </Form.Item>
             <Form.Item>
               <Button
@@ -177,7 +174,7 @@ const Plugins: React.FC = () => {
 
   const handleTestPlugin = async (pluginName: string, config: Record<string, unknown>) => {
     try {
-      const response = await pluginApi.execute(pluginName, config);
+      const response = await pluginApi.execute(pluginName, config) as any;
       if (response.success) {
         const result = response.data;
         if (result?.success) {
@@ -189,7 +186,9 @@ const Plugins: React.FC = () => {
         message.error(`插件执行失败: ${response.message || '未知错误'}`);
       }
     } catch (error: any) {
-      message.error(`插件执行失败: ${error?.response?.data?.message || error.message || '未知错误'}`);
+      message.error(
+        `插件执行失败: ${error?.response?.data?.message || error.message || '未知错误'}`
+      );
     }
   };
 
@@ -198,7 +197,7 @@ const Plugins: React.FC = () => {
     // 如果是 @devops-automation/plugin-xxx 格式，提取 plugin-xxx 部分
     const match = name.match(/plugin-([\w-]+)$/);
     if (match) {
-      return match[1].replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+      return match[1].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
     return name;
   };
@@ -207,7 +206,8 @@ const Plugins: React.FC = () => {
   const getPluginType = (name: string) => {
     if (name.includes('git')) return { color: 'orange', text: 'Git' };
     if (name.includes('docker')) return { color: 'blue', text: 'Docker' };
-    if (name.includes('k8s') || name.includes('kubernetes')) return { color: 'purple', text: 'K8s' };
+    if (name.includes('k8s') || name.includes('kubernetes'))
+      return { color: 'purple', text: 'K8s' };
     if (name.includes('test')) return { color: 'green', text: '测试' };
     if (name.includes('deploy')) return { color: 'red', text: '部署' };
     return { color: 'default', text: '其他' };
@@ -223,7 +223,7 @@ const Plugins: React.FC = () => {
       </div>
 
       <Row gutter={[16, 16]}>
-        {plugins.map((plugin) => {
+        {plugins.map(plugin => {
           const displayName = getDisplayName(plugin.name);
           const typeInfo = getPluginType(plugin.name);
 
@@ -246,9 +246,7 @@ const Plugins: React.FC = () => {
                   avatar={<AppstoreOutlined style={{ fontSize: '24px' }} />}
                   title={
                     <div>
-                      <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                        {displayName}
-                      </div>
+                      <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{displayName}</div>
                       <div style={{ fontSize: '12px', color: '#999', wordBreak: 'break-all' }}>
                         {plugin.name}
                       </div>

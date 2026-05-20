@@ -91,14 +91,14 @@ const CreateAppType: React.FC = () => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      
+
       if (steps.length === 0) {
         message.warning('请至少添加一个工作流步骤');
         return;
       }
 
       // 验证所有步骤都有名称和插件
-      const invalidSteps = steps.filter((s) => !s.name || !s.plugin);
+      const invalidSteps = steps.filter(s => !s.name || !s.plugin);
       if (invalidSteps.length > 0) {
         message.warning('请填写所有步骤的名称和插件');
         return;
@@ -108,7 +108,7 @@ const CreateAppType: React.FC = () => {
         ...values,
         defaultWorkflow: {
           name: `${values.name}默认工作流`,
-          steps: steps.map((step) => ({
+          steps: steps.map(step => ({
             id: step.id,
             name: step.name,
             plugin: step.plugin,
@@ -191,7 +191,7 @@ const CreateAppType: React.FC = () => {
                   <label style={{ display: 'block', marginBottom: 8 }}>步骤名称：</label>
                   <Input
                     value={step.name}
-                    onChange={(e) => handleStepChange(index, 'name', e.target.value)}
+                    onChange={e => handleStepChange(index, 'name', e.target.value)}
                     placeholder="例如：代码拉取"
                   />
                 </div>
@@ -200,11 +200,11 @@ const CreateAppType: React.FC = () => {
                   <label style={{ display: 'block', marginBottom: 8 }}>插件：</label>
                   <Select
                     value={step.plugin}
-                    onChange={(value) => handleStepChange(index, 'plugin', value)}
+                    onChange={value => handleStepChange(index, 'plugin', value)}
                     style={{ width: '100%' }}
                     placeholder="选择插件"
                   >
-                    {plugins.map((plugin) => (
+                    {plugins.map(plugin => (
                       <Option key={plugin.name} value={plugin.name}>
                         {plugin.name} (v{plugin.version})
                       </Option>
@@ -216,7 +216,7 @@ const CreateAppType: React.FC = () => {
                   <label style={{ display: 'block', marginBottom: 8 }}>配置（JSON）：</label>
                   <TextArea
                     value={step.config ? JSON.stringify(step.config, null, 2) : ''}
-                    onChange={(e) => {
+                    onChange={e => {
                       try {
                         const config = e.target.value ? JSON.parse(e.target.value) : {};
                         handleStepChange(index, 'config', config);
@@ -241,9 +241,7 @@ const CreateAppType: React.FC = () => {
 
         <div style={{ marginTop: 24, textAlign: 'right' }}>
           <Space>
-            <Button onClick={() => navigate('/app-types')}>
-              取消
-            </Button>
+            <Button onClick={() => navigate('/app-types')}>取消</Button>
             <Button type="primary" htmlType="submit" loading={loading}>
               {id ? '更新' : '创建'}
             </Button>

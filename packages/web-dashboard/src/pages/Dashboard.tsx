@@ -32,13 +32,13 @@ const Dashboard: React.FC = () => {
       const workflowsRes = await workflowApi.getAll();
       const pluginsRes = await pluginApi.getAll();
       if (workflowsRes.success) {
-        setStats((prev) => ({
+        setStats(prev => ({
           ...prev,
           workflows: workflowsRes.data?.length || 0,
         }));
       }
       if (pluginsRes.success) {
-        setStats((prev) => ({
+        setStats(prev => ({
           ...prev,
           plugins: pluginsRes.data?.length || 0,
         }));
@@ -53,7 +53,7 @@ const Dashboard: React.FC = () => {
       const response = await schedulerApi.getStatus();
       if (response.success) {
         setSchedulerStatus(response.data);
-        setStats((prev) => ({
+        setStats(prev => ({
           ...prev,
           running: response.data.runningTasks,
         }));
@@ -70,38 +70,22 @@ const Dashboard: React.FC = () => {
       <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
         <Col xs={24} sm={12} md={6}>
           <Card>
-            <Statistic
-              title="工作流总数"
-              value={stats.workflows}
-              prefix={<ApiOutlined />}
-            />
+            <Statistic title="工作流总数" value={stats.workflows} prefix={<ApiOutlined />} />
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card>
-            <Statistic
-              title="已注册插件"
-              value={stats.plugins}
-              prefix={<AppstoreOutlined />}
-            />
+            <Statistic title="已注册插件" value={stats.plugins} prefix={<AppstoreOutlined />} />
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card>
-            <Statistic
-              title="运行中任务"
-              value={stats.running}
-              prefix={<PlayCircleOutlined />}
-            />
+            <Statistic title="运行中任务" value={stats.running} prefix={<PlayCircleOutlined />} />
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card>
-            <Statistic
-              title="成功执行"
-              value={stats.success}
-              prefix={<CheckCircleOutlined />}
-            />
+            <Statistic title="成功执行" value={stats.success} prefix={<CheckCircleOutlined />} />
           </Card>
         </Col>
       </Row>
@@ -116,8 +100,12 @@ const Dashboard: React.FC = () => {
         </Col>
         <Col xs={24} md={12}>
           <Card title="系统信息">
-            <p>API服务: <Tag color="green">运行中</Tag></p>
-            <p>前端服务: <Tag color="green">运行中</Tag></p>
+            <p>
+              API服务: <Tag color="green">运行中</Tag>
+            </p>
+            <p>
+              前端服务: <Tag color="green">运行中</Tag>
+            </p>
           </Card>
         </Col>
       </Row>
@@ -126,4 +114,3 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
-

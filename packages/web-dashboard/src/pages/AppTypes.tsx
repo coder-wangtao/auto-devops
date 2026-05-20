@@ -101,11 +101,7 @@ const AppTypes: React.FC = () => {
       width: 200,
       render: (_: unknown, record: AppType) => (
         <Space>
-          <Button
-            type="link"
-            icon={<EyeOutlined />}
-            onClick={() => handleViewDetail(record)}
-          >
+          <Button type="link" icon={<EyeOutlined />} onClick={() => handleViewDetail(record)}>
             详情
           </Button>
           <Link to={`/app-types/edit/${record.id}`}>
@@ -137,12 +133,7 @@ const AppTypes: React.FC = () => {
         </Link>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={appTypes}
-        loading={loading}
-        rowKey="id"
-      />
+      <Table columns={columns} dataSource={appTypes} loading={loading} rowKey="id" />
 
       <Modal
         title="应用类型详情"
@@ -171,10 +162,7 @@ const AppTypes: React.FC = () => {
             </Descriptions>
 
             {selectedAppType.defaultWorkflow && (
-              <Card
-                title="默认工作流"
-                style={{ marginTop: 16 }}
-              >
+              <Card title="默认工作流" style={{ marginTop: 16 }}>
                 <Descriptions column={1} bordered>
                   <Descriptions.Item label="工作流名称">
                     {selectedAppType.defaultWorkflow.name}

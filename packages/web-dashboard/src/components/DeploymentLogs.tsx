@@ -1,6 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Button, Modal, Descriptions, Typography, Space, Card, message, Select, Radio, Row, Col } from 'antd';
-import { RollbackOutlined, EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import {
+  Table,
+  Tag,
+  Button,
+  Modal,
+  Descriptions,
+  Typography,
+  Space,
+  Card,
+  message,
+  Select,
+  Radio,
+  Row,
+  Col,
+} from 'antd';
+import {
+  RollbackOutlined,
+  EyeOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ClockCircleOutlined,
+} from '@ant-design/icons';
 import { deploymentLogApi, workflowApi } from '../services/api';
 import type { ColumnsType } from 'antd/es/table';
 
@@ -47,9 +67,11 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
   const [detailVisible, setDetailVisible] = useState(false);
   const [selectedLog, setSelectedLog] = useState<DeploymentLog | null>(null);
   const [rollbackLoading, setRollbackLoading] = useState<string | null>(null);
-  
+
   // 筛选状态
-  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | undefined>(initialWorkflowId);
+  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | undefined>(
+    initialWorkflowId
+  );
   const [operationType, setOperationType] = useState<'all' | 'deployment' | 'rollback'>('all');
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
 
@@ -170,11 +192,23 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
   const getStatusTag = (status: string) => {
     switch (status) {
       case 'success':
-        return <Tag color="success" icon={<CheckCircleOutlined />}>成功</Tag>;
+        return (
+          <Tag color="success" icon={<CheckCircleOutlined />}>
+            成功
+          </Tag>
+        );
       case 'failed':
-        return <Tag color="error" icon={<CloseCircleOutlined />}>失败</Tag>;
+        return (
+          <Tag color="error" icon={<CloseCircleOutlined />}>
+            失败
+          </Tag>
+        );
       case 'running':
-        return <Tag color="processing" icon={<ClockCircleOutlined />}>运行中</Tag>;
+        return (
+          <Tag color="processing" icon={<ClockCircleOutlined />}>
+            运行中
+          </Tag>
+        );
       default:
         return <Tag>{status}</Tag>;
     }
@@ -201,7 +235,11 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
       dataIndex: 'id',
       key: 'id',
       width: 200,
-      render: (text: string) => <Text code style={{ fontSize: '12px' }}>{text.substring(0, 20)}...</Text>,
+      render: (text: string) => (
+        <Text code style={{ fontSize: '12px' }}>
+          {text.substring(0, 20)}...
+        </Text>
+      ),
     },
     {
       title: '工作流名称',
@@ -214,11 +252,7 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
       width: 100,
       render: (_: unknown, record: DeploymentLog) => {
         const isRollback = record.executionId?.startsWith('rollback_');
-        return isRollback ? (
-          <Tag color="orange">回滚</Tag>
-        ) : (
-          <Tag color="blue">部署</Tag>
-        );
+        return isRollback ? <Tag color="orange">回滚</Tag> : <Tag color="blue">部署</Tag>;
       },
     },
     {
@@ -251,14 +285,10 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
       render: (_: unknown, record: DeploymentLog) => {
         // 判断是否是回滚记录（executionId 以 rollback_ 开头）
         const isRollbackRecord = record.executionId?.startsWith('rollback_');
-        
+
         return (
           <Space>
-            <Button
-              type="link"
-              icon={<EyeOutlined />}
-              onClick={() => handleViewDetail(record)}
-            >
+            <Button type="link" icon={<EyeOutlined />} onClick={() => handleViewDetail(record)}>
               查看详情
             </Button>
             {record.status === 'success' && !isRollbackRecord && (
@@ -290,9 +320,9 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
               placeholder="全部工作流"
               allowClear
               value={selectedWorkflowId}
-              onChange={(value) => setSelectedWorkflowId(value)}
+              onChange={value => setSelectedWorkflowId(value)}
             >
-              {workflows.map((workflow) => (
+              {workflows.map(workflow => (
                 <Option key={workflow.id} value={workflow.id}>
                   {workflow.name}
                 </Option>
@@ -301,10 +331,7 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
           </Col>
           <Col>
             <span style={{ marginRight: 8 }}>操作类型：</span>
-            <Radio.Group
-              value={operationType}
-              onChange={(e) => setOperationType(e.target.value)}
-            >
+            <Radio.Group value={operationType} onChange={e => setOperationType(e.target.value)}>
               <Radio.Button value="all">全部</Radio.Button>
               <Radio.Button value="deployment">部署</Radio.Button>
               <Radio.Button value="rollback">回滚</Radio.Button>
@@ -321,7 +348,7 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
         pagination={{
           pageSize: 10,
           showSizeChanger: true,
-          showTotal: (total) => `共 ${total} 条记录`,
+          showTotal: total => `共 ${total} 条记录`,
         }}
       />
 
@@ -339,7 +366,9 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
               <Descriptions.Item label="工作流名称">{selectedLog.workflowName}</Descriptions.Item>
               <Descriptions.Item label="执行ID">{selectedLog.executionId}</Descriptions.Item>
               <Descriptions.Item label="状态">{getStatusTag(selectedLog.status)}</Descriptions.Item>
-              <Descriptions.Item label="部署时间">{formatDate(selectedLog.createdAt)}</Descriptions.Item>
+              <Descriptions.Item label="部署时间">
+                {formatDate(selectedLog.createdAt)}
+              </Descriptions.Item>
               <Descriptions.Item label="完成时间">
                 {selectedLog.completedAt ? formatDate(selectedLog.completedAt) : '-'}
               </Descriptions.Item>
@@ -384,19 +413,20 @@ const DeploymentLogs: React.FC<DeploymentLogsProps> = ({ workflowId: initialWork
               </div>
             </Card>
 
-            {selectedLog.rollbackInfo?.canRollback && !selectedLog.executionId?.startsWith('rollback_') && (
-              <div style={{ textAlign: 'right' }}>
-                <Button
-                  type="primary"
-                  danger
-                  icon={<RollbackOutlined />}
-                  loading={rollbackLoading === selectedLog.id}
-                  onClick={() => handleRollbackToPrevious(selectedLog)}
-                >
-                  回滚到上一个版本
-                </Button>
-              </div>
-            )}
+            {selectedLog.rollbackInfo?.canRollback &&
+              !selectedLog.executionId?.startsWith('rollback_') && (
+                <div style={{ textAlign: 'right' }}>
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<RollbackOutlined />}
+                    loading={rollbackLoading === selectedLog.id}
+                    onClick={() => handleRollbackToPrevious(selectedLog)}
+                  >
+                    回滚到上一个版本
+                  </Button>
+                </div>
+              )}
           </Space>
         )}
       </Modal>

@@ -1,6 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Descriptions, Tag, Typography, Space, Timeline, Button, message, Card, Collapse } from 'antd';
-import { CheckCircleOutlined, CloseCircleOutlined, ClockCircleOutlined, RollbackOutlined } from '@ant-design/icons';
+import {
+  Modal,
+  Descriptions,
+  Tag,
+  Typography,
+  Space,
+  Timeline,
+  Button,
+  message,
+  Card,
+  Collapse,
+} from 'antd';
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ClockCircleOutlined,
+  RollbackOutlined,
+} from '@ant-design/icons';
 import { deploymentLogApi } from '../services/api';
 
 const { Text, Paragraph } = Typography;
@@ -64,7 +80,7 @@ const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
   const [loadingLog, setLoadingLog] = useState(false);
 
   // 创建步骤ID到步骤信息的映射
-  const stepMap = new Map(steps.map((step) => [step.id, step]));
+  const stepMap = new Map(steps.map(step => [step.id, step]));
 
   // 加载部署日志
   useEffect(() => {
@@ -77,7 +93,7 @@ const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
 
   const loadDeploymentLog = async () => {
     if (!executionId) return;
-    
+
     setLoadingLog(true);
     try {
       const response = await deploymentLogApi.getByExecutionId(executionId);
@@ -156,7 +172,9 @@ const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
   };
 
   // 格式化错误信息
-  const formatError = (error: Error | string | { message?: string; name?: string; stack?: string } | undefined): string => {
+  const formatError = (
+    error: Error | string | { message?: string; name?: string; stack?: string } | undefined
+  ): string => {
     if (!error) return '';
     if (typeof error === 'string') return error;
     if (error instanceof Error) {
@@ -176,35 +194,33 @@ const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
   };
 
   // 计算总体状态
-  const allSuccess = results.every((r) => r.success);
-  const hasError = results.some((r) => !r.success);
+  const allSuccess = results.every(r => r.success);
+  const hasError = results.some(r => !r.success);
 
   return (
     <Modal
       title={`执行详情 - ${workflowName}`}
       open={visible}
       onCancel={onClose}
-      footer={
-        (() => {
-          // 判断是否是回滚记录（executionId 以 rollback_ 开头）
-          const isRollbackRecord = deploymentLog?.executionId?.startsWith('rollback_');
-          // 只有非回滚记录且可以回滚时才显示按钮
-          if (deploymentLog?.rollbackInfo?.canRollback && !isRollbackRecord) {
-            return (
-              <Button
-                type="primary"
-                danger
-                icon={<RollbackOutlined />}
-                loading={rollbackLoading}
-                onClick={handleRollback}
-              >
-                回滚到上一个版本
-              </Button>
-            );
-          }
-          return null;
-        })()
-      }
+      footer={(() => {
+        // 判断是否是回滚记录（executionId 以 rollback_ 开头）
+        const isRollbackRecord = deploymentLog?.executionId?.startsWith('rollback_');
+        // 只有非回滚记录且可以回滚时才显示按钮
+        if (deploymentLog?.rollbackInfo?.canRollback && !isRollbackRecord) {
+          return (
+            <Button
+              type="primary"
+              danger
+              icon={<RollbackOutlined />}
+              loading={rollbackLoading}
+              onClick={handleRollback}
+            >
+              回滚到上一个版本
+            </Button>
+          );
+        }
+        return null;
+      })()}
       width={1000}
     >
       <Space direction="vertical" style={{ width: '100%' }} size="large">
@@ -228,7 +244,7 @@ const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
           </Descriptions.Item>
           <Descriptions.Item label="总步骤数">{steps.length}</Descriptions.Item>
           <Descriptions.Item label="成功步骤">
-            {results.filter((r) => r.success).length} / {results.length}
+            {results.filter(r => r.success).length} / {results.length}
           </Descriptions.Item>
           {deploymentLog && (
             <>
@@ -263,7 +279,9 @@ const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
                 >
                   <Space direction="vertical" style={{ width: '100%' }} size="small">
                     <div>
-                      <Text strong>步骤 {index + 1}: {stepName}</Text>
+                      <Text strong>
+                        步骤 {index + 1}: {stepName}
+                      </Text>
                       <Tag style={{ marginLeft: 8 }}>{pluginName}</Tag>
                       <Tag color={result.success ? 'success' : 'error'}>
                         {result.success ? '成功' : '失败'}
@@ -364,4 +382,3 @@ const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
 };
 
 export default ExecutionDetail;
-
