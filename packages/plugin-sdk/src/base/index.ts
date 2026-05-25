@@ -40,20 +40,13 @@ export function createPlugin(
 /**
  * 获取配置值的辅助函数
  */
-export function getConfig<T = unknown>(
-  config: PluginConfig,
-  key: string
-): T | undefined {
+export function getConfig<T = unknown>(config: PluginConfig, key: string): T | undefined {
   return config[key] as T | undefined;
 }
 
 /**
  * 获取上下文值的辅助函数
  */
-export function getContext<T = unknown>(
-  context: PluginContext,
-  key: string
-): T | undefined {
+export function getContext<T = unknown>(context: PluginContext, key: string): T | undefined {
   return context[key] as T | undefined;
 }
-

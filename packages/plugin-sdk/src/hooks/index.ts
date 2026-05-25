@@ -8,4 +8,3 @@ export interface PluginHooks {
   afterExecute?: () => Promise<void> | void;
   onError?: (error: Error) => Promise<void> | void;
 }
-

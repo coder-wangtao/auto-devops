@@ -27,11 +27,7 @@ export interface ResourcePoolOptions {
  * 创建资源管理器
  */
 export function createResourceManager(options: ResourcePoolOptions = {}) {
-  const {
-    maxResources = 100,
-    autoCleanup = true,
-    cleanupInterval = 60000,
-  } = options;
+  const { maxResources = 100, autoCleanup = true, cleanupInterval = 60000 } = options;
 
   const resources: Map<string, Resource> = new Map();
   let cleanupTimer: NodeJS.Timeout | null = null;
@@ -50,10 +46,7 @@ export function createResourceManager(options: ResourcePoolOptions = {}) {
   /**
    * 分配资源
    */
-  function allocateResource(
-    type: string,
-    name?: string
-  ): Resource | null {
+  function allocateResource(type: string, name?: string): Resource | null {
     for (const resource of resources.values()) {
       if (
         resource.type === type &&
@@ -103,8 +96,7 @@ export function createResourceManager(options: ResourcePoolOptions = {}) {
    */
   function getAvailableResources(type?: string): Resource[] {
     return Array.from(resources.values()).filter(
-      (r) =>
-        r.status === 'available' && (!type || r.type === type)
+      r => r.status === 'available' && (!type || r.type === type)
     );
   }
 
@@ -163,4 +155,3 @@ export function createResourceManager(options: ResourcePoolOptions = {}) {
     destroy,
   };
 }
-

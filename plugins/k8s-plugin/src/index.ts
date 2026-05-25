@@ -53,11 +53,6 @@ async function executeK8sPlugin(
 /**
  * K8s插件定义
  */
-export const k8sPlugin = createPlugin(
-  '@devops-automation/plugin-k8s',
-  '1.0.0',
-  executeK8sPlugin
-);
+export const k8sPlugin = createPlugin('@devops-automation/plugin-k8s', '1.0.0', executeK8sPlugin);
 
 export default k8sPlugin;
-

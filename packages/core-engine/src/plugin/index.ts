@@ -34,7 +34,7 @@ export function createPluginManager() {
    * 批量注册插件
    */
   function registerPlugins(pluginList: PluginDefinition[]): void {
-    pluginList.forEach((plugin) => registerPlugin(plugin));
+    pluginList.forEach(plugin => registerPlugin(plugin));
   }
 
   /**
@@ -106,7 +106,7 @@ export function createPluginManager() {
    * 清空所有插件
    */
   function clearPlugins(): void {
-    Object.keys(plugins).forEach((key) => delete plugins[key]);
+    Object.keys(plugins).forEach(key => delete plugins[key]);
   }
 
   /**
@@ -137,4 +137,3 @@ export function createPluginManager() {
  * 默认导出插件管理器工厂函数
  */
 export const createManager = createPluginManager;
-

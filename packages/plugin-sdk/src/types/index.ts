@@ -19,4 +19,3 @@ export interface PluginResult {
   message?: string;
   data?: unknown;
 }
-

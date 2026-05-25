@@ -20,16 +20,16 @@ const __dirname = dirname(__filename);
 function findProjectRoot(startPath: string): string {
   let currentPath = resolve(startPath);
   const root = resolve('/');
-  
+
   while (currentPath !== root) {
     const workspaceFile = resolve(currentPath, 'pnpm-workspace.yaml');
     const packageJsonFile = resolve(currentPath, 'package.json');
-    
+
     // 检查是否存在 pnpm-workspace.yaml 和 package.json
     if (existsSync(workspaceFile) && existsSync(packageJsonFile)) {
       return currentPath;
     }
-    
+
     // 向上查找
     const parentPath = resolve(currentPath, '..');
     if (parentPath === currentPath) {
@@ -37,7 +37,7 @@ function findProjectRoot(startPath: string): string {
     }
     currentPath = parentPath;
   }
-  
+
   // 如果找不到，使用默认计算方式
   return resolve(__dirname, '../../../..');
 }
@@ -109,23 +109,23 @@ async function startApp(config: DeployPluginConfig): Promise<PluginResult> {
       console.log(`[DeployPlugin] node_modules 不存在，开始安装依赖...`);
       const isWindows = process.platform === 'win32';
       const pnpmCmd = isWindows ? 'pnpm.cmd' : 'pnpm';
-      
-      return new Promise((resolve) => {
+
+      return new Promise(resolve => {
         const installProcess = spawn(pnpmCmd, ['install', '--no-frozen-lockfile'], {
           cwd: appPath,
           shell: true,
           stdio: 'pipe',
         });
 
-        installProcess.stdout?.on('data', (data) => {
+        installProcess.stdout?.on('data', data => {
           console.log(`[DeployPlugin] 安装依赖输出: ${data.toString()}`);
         });
 
-        installProcess.stderr?.on('data', (data) => {
+        installProcess.stderr?.on('data', data => {
           console.error(`[DeployPlugin] 安装依赖错误: ${data.toString()}`);
         });
 
-        installProcess.on('exit', async (code) => {
+        installProcess.on('exit', async code => {
           console.log(`[DeployPlugin] 依赖安装完成，退出码: ${code}`);
           if (code === 0) {
             // 安装成功，继续启动应用
@@ -141,7 +141,7 @@ async function startApp(config: DeployPluginConfig): Promise<PluginResult> {
           }
         });
 
-        installProcess.on('error', (error) => {
+        installProcess.on('error', error => {
           console.error(`[DeployPlugin] 安装依赖时出错:`, error);
           resolve({
             success: false,
@@ -174,9 +174,9 @@ async function startAppAfterInstall(
   try {
     const isWindows = process.platform === 'win32';
     const pnpmCmd = isWindows ? 'pnpm.cmd' : 'pnpm';
-    
+
     console.log(`[DeployPlugin] 执行命令: ${pnpmCmd} run dev, 工作目录: ${appPath}`);
-    
+
     const childProcess = spawn(pnpmCmd, ['run', 'dev'], {
       cwd: appPath,
       shell: true,
@@ -188,11 +188,11 @@ async function startAppAfterInstall(
     });
 
     // 监听进程输出
-    childProcess.stdout?.on('data', (data) => {
+    childProcess.stdout?.on('data', data => {
       console.log(`[DeployPlugin] 应用输出: ${data.toString()}`);
     });
 
-    childProcess.stderr?.on('data', (data) => {
+    childProcess.stderr?.on('data', data => {
       console.error(`[DeployPlugin] 应用错误: ${data.toString()}`);
     });
 
@@ -201,19 +201,19 @@ async function startAppAfterInstall(
     console.log(`[DeployPlugin] 进程已启动，PID: ${childProcess.pid}`);
 
     // 监听进程退出
-    childProcess.on('exit', (code) => {
+    childProcess.on('exit', code => {
       console.log(`[DeployPlugin] 进程退出，退出码: ${code}`);
       runningProcesses.delete(processKey);
     });
 
-    childProcess.on('error', (error) => {
+    childProcess.on('error', error => {
       console.error(`[DeployPlugin] 进程错误:`, error);
       runningProcesses.delete(processKey);
     });
 
     // 等待一段时间确保进程启动
     console.log(`[DeployPlugin] 等待进程启动...`);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     // 检查进程是否还在运行
     if (childProcess.killed) {
@@ -258,7 +258,7 @@ async function stopApp(config: DeployPluginConfig): Promise<PluginResult> {
     const process = runningProcesses.get(processKey);
     if (process && !process.killed) {
       console.log(`[DeployPlugin] 找到运行中的进程，PID: ${process.pid}`);
-      
+
       // 在 Windows 上需要终止整个进程树
       const isWindows = process.platform === 'win32';
       if (isWindows) {
@@ -278,7 +278,7 @@ async function stopApp(config: DeployPluginConfig): Promise<PluginResult> {
           }
         }, 3000);
       }
-      
+
       runningProcesses.delete(processKey);
       console.log(`[DeployPlugin] 应用已停止`);
       return {
@@ -311,7 +311,10 @@ async function executeDeployPlugin(
   const deployConfig = config as DeployPluginConfig;
   const { action, environment, target, strategy } = deployConfig;
 
-  console.log(`[DeployPlugin] 执行插件，action: ${action}, config:`, JSON.stringify(config, null, 2));
+  console.log(
+    `[DeployPlugin] 执行插件，action: ${action}, config:`,
+    JSON.stringify(config, null, 2)
+  );
   console.log(`[DeployPlugin] 项目根目录: ${projectRoot}`);
   console.log(`[DeployPlugin] 演示应用路径: ${demoAppPath}`);
 
@@ -330,7 +333,7 @@ async function executeDeployPlugin(
     // 如果指定了 action 为 restart，则重启应用
     if (action === 'restart') {
       await stopApp(deployConfig);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       return await startApp(deployConfig);
     }
 
@@ -376,4 +379,3 @@ export const deployPlugin = createPlugin(
 );
 
 export default deployPlugin;
-

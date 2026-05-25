@@ -37,11 +37,7 @@ export interface ScheduleResult {
  * 创建任务调度器
  */
 export function createTaskScheduler(options: SchedulerOptions = {}) {
-  const {
-    maxConcurrency = 5,
-    retryAttempts = 3,
-    retryDelay = 1000,
-  } = options;
+  const { maxConcurrency = 5, retryAttempts = 3, retryDelay = 1000 } = options;
 
   const taskQueue: Task[] = [];
   let runningTasks = 0;
@@ -99,7 +95,7 @@ export function createTaskScheduler(options: SchedulerOptions = {}) {
             error: error as Error,
           };
         }
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
     return {
@@ -130,4 +126,3 @@ export function createTaskScheduler(options: SchedulerOptions = {}) {
  * 默认导出调度器工厂函数
  */
 export const createScheduler = createTaskScheduler;
-

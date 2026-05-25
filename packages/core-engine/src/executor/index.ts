@@ -82,28 +82,20 @@ export function createWorkflowExecutor(options: ExecutorOptions = {}) {
   /**
    * 检查步骤依赖是否满足
    */
-  function checkDependencies(
-    step: WorkflowStep,
-    previousResults: ExecutionResult[]
-  ): boolean {
+  function checkDependencies(step: WorkflowStep, previousResults: ExecutionResult[]): boolean {
     if (!step.dependsOn || step.dependsOn.length === 0) {
       return true;
     }
 
-    const completedSteps = new Set(
-      previousResults.filter((r) => r.success).map((r) => r.stepId)
-    );
+    const completedSteps = new Set(previousResults.filter(r => r.success).map(r => r.stepId));
 
-    return step.dependsOn.every((depId) => completedSteps.has(depId));
+    return step.dependsOn.every(depId => completedSteps.has(depId));
   }
 
   /**
    * 检查条件是否满足
    */
-  function checkCondition(
-    condition: string | undefined,
-    _context: ExecutionContext
-  ): boolean {
+  function checkCondition(condition: string | undefined, _context: ExecutionContext): boolean {
     if (!condition) return true;
     // 简单的条件检查，实际应该使用表达式解析器
     // 使用 _context 前缀表示参数暂时未使用
@@ -152,10 +144,7 @@ export function createWorkflowExecutor(options: ExecutorOptions = {}) {
       const result = await executeStep(step, {
         ...executionContext,
         stepId: step.id,
-        previousResults: results.reduce(
-          (acc, r) => ({ ...acc, [r.stepId]: r.result }),
-          {}
-        ),
+        previousResults: results.reduce((acc, r) => ({ ...acc, [r.stepId]: r.result }), {}),
       });
 
       results.push(result);
@@ -234,4 +223,3 @@ export function createWorkflowExecutor(options: ExecutorOptions = {}) {
  * 默认导出执行器工厂函数
  */
 export const createExecutor = createWorkflowExecutor;
-
