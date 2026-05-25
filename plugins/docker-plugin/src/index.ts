@@ -43,11 +43,11 @@ async function executeDockerCommand(
   env?: Record<string, string>
 ): Promise<{ stdout: string; stderr: string }> {
   const options: { cwd?: string; env?: Record<string, string> } = {};
-  
+
   if (workDir) {
     options.cwd = resolve(workDir);
   }
-  
+
   if (env) {
     // 过滤掉 undefined 值
     const processEnv: Record<string, string> = {};
@@ -76,9 +76,8 @@ async function executeDockerCommand(
  * 获取工作目录
  */
 function getWorkDirectory(config: DockerPluginConfig, context: PluginContext): string {
-  const workDir = getConfig<string>(config, 'workDir') || 
-                  getContext<string>(context, 'workDir') ||
-                  process.cwd();
+  const workDir =
+    getConfig<string>(config, 'workDir') || getContext<string>(context, 'workDir') || process.cwd();
   return resolve(workDir);
 }
 
@@ -92,7 +91,10 @@ function getContext<T = unknown>(context: PluginContext, key: string): T | undef
 /**
  * 构建镜像
  */
-async function buildImage(config: DockerPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function buildImage(
+  config: DockerPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const image = getConfig<string>(config, 'image');
   const tag = getConfig<string>(config, 'tag') || 'latest';
   const dockerfile = getConfig<string>(config, 'dockerfile') || 'Dockerfile';
@@ -122,11 +124,11 @@ async function buildImage(config: DockerPluginConfig, context: PluginContext): P
   }
 
   let buildCommand = `docker build -t ${fullImageName}`;
-  
+
   if (existsSync(dockerfilePath)) {
     buildCommand += ` -f ${dockerfilePath}`;
   }
-  
+
   buildCommand += ` ${buildContext}`;
 
   try {
@@ -150,7 +152,10 @@ async function buildImage(config: DockerPluginConfig, context: PluginContext): P
 /**
  * 推送镜像
  */
-async function pushImage(config: DockerPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function pushImage(
+  config: DockerPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const image = getConfig<string>(config, 'image');
   const tag = getConfig<string>(config, 'tag') || 'latest';
   const registry = getConfig<string>(config, 'registry');
@@ -188,7 +193,10 @@ async function pushImage(config: DockerPluginConfig, context: PluginContext): Pr
 /**
  * 拉取镜像
  */
-async function pullImage(config: DockerPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function pullImage(
+  config: DockerPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const image = getConfig<string>(config, 'image');
   const tag = getConfig<string>(config, 'tag') || 'latest';
   const registry = getConfig<string>(config, 'registry');
@@ -226,7 +234,10 @@ async function pullImage(config: DockerPluginConfig, context: PluginContext): Pr
 /**
  * 运行容器
  */
-async function runContainer(config: DockerPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function runContainer(
+  config: DockerPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const image = getConfig<string>(config, 'image');
   const tag = getConfig<string>(config, 'tag') || 'latest';
   const container = getConfig<string>(config, 'container');
@@ -293,7 +304,10 @@ async function runContainer(config: DockerPluginConfig, context: PluginContext):
 /**
  * 停止容器
  */
-async function stopContainer(config: DockerPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function stopContainer(
+  config: DockerPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const container = getConfig<string>(config, 'container');
 
   if (!container) {
@@ -323,7 +337,10 @@ async function stopContainer(config: DockerPluginConfig, context: PluginContext)
 /**
  * 删除容器
  */
-async function removeContainer(config: DockerPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function removeContainer(
+  config: DockerPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const container = getConfig<string>(config, 'container');
   const force = getConfig<boolean>(config, 'force') || false;
 
@@ -359,7 +376,10 @@ async function removeContainer(config: DockerPluginConfig, context: PluginContex
 /**
  * 列出镜像
  */
-async function listImages(config: DockerPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function listImages(
+  config: DockerPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const all = getConfig<boolean>(config, 'all') || false;
 
   let imagesCommand = 'docker images';
@@ -387,7 +407,10 @@ async function listImages(config: DockerPluginConfig, context: PluginContext): P
 /**
  * 列出容器
  */
-async function listContainers(config: DockerPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function listContainers(
+  config: DockerPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const all = getConfig<boolean>(config, 'all') || false;
 
   let psCommand = 'docker ps';
@@ -430,13 +453,15 @@ async function tagImage(config: DockerPluginConfig, context: PluginContext): Pro
 
   const sourceImage = `${image}:${tag}`;
   let targetImage = `${image}:${newTag}`;
-  
+
   if (registry) {
     targetImage = `${registry}/${targetImage}`;
   }
 
   try {
-    const { stdout, stderr } = await executeDockerCommand(`docker tag ${sourceImage} ${targetImage}`);
+    const { stdout, stderr } = await executeDockerCommand(
+      `docker tag ${sourceImage} ${targetImage}`
+    );
     return {
       success: true,
       message: `成功标记镜像: ${sourceImage} -> ${targetImage}`,
@@ -457,7 +482,10 @@ async function tagImage(config: DockerPluginConfig, context: PluginContext): Pro
 /**
  * 删除镜像
  */
-async function removeImage(config: DockerPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function removeImage(
+  config: DockerPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const image = getConfig<string>(config, 'image');
   const tag = getConfig<string>(config, 'tag') || 'latest';
   const force = getConfig<boolean>(config, 'force') || false;
@@ -471,7 +499,7 @@ async function removeImage(config: DockerPluginConfig, context: PluginContext): 
 
   const fullImageName = `${image}:${tag}`;
   let rmiCommand = `docker rmi ${fullImageName}`;
-  
+
   if (force) {
     rmiCommand += ' -f';
   }
@@ -555,4 +583,3 @@ export const dockerPlugin = createPlugin(
 );
 
 export default dockerPlugin;
-

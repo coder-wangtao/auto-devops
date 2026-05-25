@@ -42,11 +42,11 @@ async function executeGitCommand(
   env?: Record<string, string>
 ): Promise<{ stdout: string; stderr: string }> {
   const options: { cwd?: string; env?: Record<string, string> } = {};
-  
+
   if (workDir) {
     options.cwd = resolve(workDir);
   }
-  
+
   if (env) {
     // 过滤掉 undefined 值
     const processEnv: Record<string, string> = {};
@@ -75,9 +75,8 @@ async function executeGitCommand(
  * 获取工作目录
  */
 function getWorkDirectory(config: GitPluginConfig, context: PluginContext): string {
-  const workDir = getConfig<string>(config, 'workDir') || 
-                  getContext<string>(context, 'workDir') ||
-                  process.cwd();
+  const workDir =
+    getConfig<string>(config, 'workDir') || getContext<string>(context, 'workDir') || process.cwd();
   return resolve(workDir);
 }
 
@@ -91,9 +90,10 @@ function getContext<T = unknown>(context: PluginContext, key: string): T | undef
 /**
  * 克隆仓库
  */
-async function cloneRepository(config: GitPluginConfig, context: PluginContext): Promise<PluginResult> {
-  
-  
+async function cloneRepository(
+  config: GitPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const repository = getConfig<string>(config, 'repository');
   if (!repository) {
     return {
@@ -122,15 +122,15 @@ async function cloneRepository(config: GitPluginConfig, context: PluginContext):
   }
 
   let cloneCommand = `git clone ${repository}`;
-  
+
   if (branch) {
     cloneCommand += ` -b ${branch}`;
   }
-  
+
   if (depth) {
     cloneCommand += ` --depth ${depth}`;
   }
-  
+
   cloneCommand += ` ${targetDir}`;
 
   try {
@@ -154,7 +154,10 @@ async function cloneRepository(config: GitPluginConfig, context: PluginContext):
 /**
  * 切换分支或标签
  */
-async function checkoutBranch(config: GitPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function checkoutBranch(
+  config: GitPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const branch = getConfig<string>(config, 'branch');
   const tag = getConfig<string>(config, 'tag');
   const commit = getConfig<string>(config, 'commit');
@@ -272,7 +275,10 @@ async function pushCode(config: GitPluginConfig, context: PluginContext): Promis
 /**
  * 提交代码
  */
-async function commitChanges(config: GitPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function commitChanges(
+  config: GitPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const message = getConfig<string>(config, 'message');
   const files = getConfig<string[]>(config, 'files');
   const workDir = getWorkDirectory(config, context);
@@ -305,7 +311,7 @@ async function commitChanges(config: GitPluginConfig, context: PluginContext): P
     // 提交
     const commitCommand = `git commit -m "${message.replace(/"/g, '\\"')}"`;
     const { stdout, stderr } = await executeGitCommand(commitCommand, workDir);
-    
+
     return {
       success: true,
       message: '成功提交代码',
@@ -339,7 +345,7 @@ async function getStatus(config: GitPluginConfig, context: PluginContext): Promi
     const { stdout, stderr } = await executeGitCommand('git status', workDir);
     const branchResult = await executeGitCommand('git branch --show-current', workDir);
     const branch = branchResult.stdout.trim();
-    
+
     return {
       success: true,
       message: '获取状态成功',
@@ -359,7 +365,10 @@ async function getStatus(config: GitPluginConfig, context: PluginContext): Promi
 /**
  * 获取远程更新
  */
-async function fetchUpdates(config: GitPluginConfig, context: PluginContext): Promise<PluginResult> {
+async function fetchUpdates(
+  config: GitPluginConfig,
+  context: PluginContext
+): Promise<PluginResult> {
   const remote = getConfig<string>(config, 'remote') || 'origin';
   const workDir = getWorkDirectory(config, context);
 
@@ -478,11 +487,6 @@ async function executeGitPlugin(
 /**
  * Git插件定义
  */
-export const gitPlugin = createPlugin(
-  '@devops-automation/plugin-git',
-  '1.0.0',
-  executeGitPlugin
-);
+export const gitPlugin = createPlugin('@devops-automation/plugin-git', '1.0.0', executeGitPlugin);
 
 export default gitPlugin;
-

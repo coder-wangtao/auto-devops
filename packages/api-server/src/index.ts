@@ -27,15 +27,15 @@ app.use(cors());
 app.use(express.json());
 
 // 从 plugins/ 目录加载并注册所有插件
-registerAllPlugins((plugin) => {
+registerAllPlugins(plugin => {
   pluginService.registerPlugin(plugin);
-}).catch((error) => {
+}).catch(error => {
   console.error('❌ 插件注册失败:', error);
   process.exit(1);
 });
 
 // 初始化示例工作流
-exampleWorkflows.forEach((workflow) => {
+exampleWorkflows.forEach(workflow => {
   workflowService.createWorkflow(workflow);
 });
 console.log(`✅ 已加载 ${exampleWorkflows.length} 个示例工作流`);
@@ -83,4 +83,3 @@ app.listen(PORT, () => {
   console.log(`🌐 访问: http://localhost:${PORT}`);
   console.log(`📚 API文档: http://localhost:${PORT}/api`);
 });
-
