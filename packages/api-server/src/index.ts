@@ -38,6 +38,7 @@ registerAllPlugins(plugin => {
 exampleWorkflows.forEach(workflow => {
   workflowService.createWorkflow(workflow);
 });
+
 console.log(`✅ 已加载 ${exampleWorkflows.length} 个示例工作流`);
 
 // 初始化示例应用类型

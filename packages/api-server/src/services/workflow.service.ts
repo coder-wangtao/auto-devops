@@ -30,7 +30,8 @@ const scheduler = createTaskScheduler({ maxConcurrency: 5 });
 
 // 内存存储（实际应该使用数据库）
 const workflows: Map<string, WorkflowDefinition> = new Map();
-const executions: Map<string, { workflowId: string; results: ExecutionResult[]; createdAt: Date }> = new Map();
+const executions: Map<string, { workflowId: string; results: ExecutionResult[]; createdAt: Date }> =
+  new Map();
 
 export const workflowService = {
   /**
@@ -102,9 +103,9 @@ export const workflowService = {
       };
 
       const results = await executor.executeWorkflow(workflow, enrichedContext as any);
-      
+
       // 将 Error 对象转换为可序列化的格式
-      const serializableResults = results.map((result) => ({
+      const serializableResults = results.map(result => ({
         ...result,
         error: result.error
           ? {
@@ -149,7 +150,7 @@ export const workflowService = {
     }));
 
     if (workflowId) {
-      return allExecutions.filter((e) => e.workflowId === workflowId);
+      return allExecutions.filter(e => e.workflowId === workflowId);
     }
 
     return allExecutions;
@@ -188,7 +189,11 @@ export const pluginService = {
   /**
    * 执行插件
    */
-  async executePlugin(name: string, config: Record<string, unknown>, context: Record<string, unknown> = {}) {
+  async executePlugin(
+    name: string,
+    config: Record<string, unknown>,
+    context: Record<string, unknown> = {}
+  ) {
     // 确保环境变量被传递到插件上下文
     const enrichedContext = {
       ...context,
@@ -208,4 +213,3 @@ export const schedulerService = {
     return scheduler.getQueueStatus();
   },
 };
-

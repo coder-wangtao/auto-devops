@@ -40,7 +40,7 @@ export interface DeploymentLog {
 const deploymentLogs: Map<string, DeploymentLog> = new Map();
 
 /**
- * 控制台输出捕获器
+ * 控制台输出捕获器 记录日志
  */
 class ConsoleCapture {
   private logs: DeploymentLogEntry[] = [];
@@ -68,12 +68,12 @@ class ConsoleCapture {
    */
   start(): void {
     const self = this;
-    
+
     console.log = (...args: unknown[]) => {
       self.logs.push({
         timestamp: new Date().toISOString(),
         level: 'log',
-        message: args.map((arg) => this.formatMessage(arg)).join(' '),
+        message: args.map(arg => this.formatMessage(arg)).join(' '),
         data: args.length > 1 ? args.slice(1) : undefined,
       });
       self.originalConsole.log(...args);
@@ -83,7 +83,7 @@ class ConsoleCapture {
       self.logs.push({
         timestamp: new Date().toISOString(),
         level: 'info',
-        message: args.map((arg) => this.formatMessage(arg)).join(' '),
+        message: args.map(arg => this.formatMessage(arg)).join(' '),
         data: args.length > 1 ? args.slice(1) : undefined,
       });
       self.originalConsole.info(...args);
@@ -93,7 +93,7 @@ class ConsoleCapture {
       self.logs.push({
         timestamp: new Date().toISOString(),
         level: 'warn',
-        message: args.map((arg) => this.formatMessage(arg)).join(' '),
+        message: args.map(arg => this.formatMessage(arg)).join(' '),
         data: args.length > 1 ? args.slice(1) : undefined,
       });
       self.originalConsole.warn(...args);
@@ -103,7 +103,7 @@ class ConsoleCapture {
       self.logs.push({
         timestamp: new Date().toISOString(),
         level: 'error',
-        message: args.map((arg) => this.formatMessage(arg)).join(' '),
+        message: args.map(arg => this.formatMessage(arg)).join(' '),
         data: args.length > 1 ? args.slice(1) : undefined,
       });
       self.originalConsole.error(...args);
@@ -113,7 +113,7 @@ class ConsoleCapture {
       self.logs.push({
         timestamp: new Date().toISOString(),
         level: 'debug',
-        message: args.map((arg) => this.formatMessage(arg)).join(' '),
+        message: args.map(arg => this.formatMessage(arg)).join(' '),
         data: args.length > 1 ? args.slice(1) : undefined,
       });
       self.originalConsole.debug(...args);
@@ -178,8 +178,8 @@ export const deploymentLogService = {
     results: ExecutionResult[]
   ): DeploymentLog {
     const id = `deploy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const allSuccess = results.every((r) => r.success);
-    const hasError = results.some((r) => !r.success);
+    const allSuccess = results.every(r => r.success);
+    const hasError = results.some(r => !r.success);
 
     const log: DeploymentLog = {
       id,
@@ -212,25 +212,28 @@ export const deploymentLogService = {
    * @param workflowId 工作流ID（可选）
    * @param operationType 操作类型：'all' | 'deployment' | 'rollback'（可选）
    */
-  getAllDeploymentLogs(workflowId?: string, operationType: 'all' | 'deployment' | 'rollback' = 'all'): DeploymentLog[] {
+  getAllDeploymentLogs(
+    workflowId?: string,
+    operationType: 'all' | 'deployment' | 'rollback' = 'all'
+  ): DeploymentLog[] {
     let allLogs = Array.from(deploymentLogs.values());
-    
+
     // 按工作流筛选
     if (workflowId) {
-      allLogs = allLogs.filter((log) => log.workflowId === workflowId);
+      allLogs = allLogs.filter(log => log.workflowId === workflowId);
     }
-    
+
     // 按操作类型筛选
     if (operationType !== 'all') {
       if (operationType === 'rollback') {
         // 筛选回滚记录（executionId 以 rollback_ 开头）
-        allLogs = allLogs.filter((log) => log.executionId?.startsWith('rollback_'));
+        allLogs = allLogs.filter(log => log.executionId?.startsWith('rollback_'));
       } else if (operationType === 'deployment') {
         // 筛选部署记录（非回滚记录）
-        allLogs = allLogs.filter((log) => !log.executionId?.startsWith('rollback_'));
+        allLogs = allLogs.filter(log => !log.executionId?.startsWith('rollback_'));
       }
     }
-    
+
     return allLogs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   },
 
@@ -238,7 +241,7 @@ export const deploymentLogService = {
    * 根据执行ID获取部署日志
    */
   getDeploymentLogByExecutionId(executionId: string): DeploymentLog | undefined {
-    return Array.from(deploymentLogs.values()).find((log) => log.executionId === executionId);
+    return Array.from(deploymentLogs.values()).find(log => log.executionId === executionId);
   },
 
   /**
@@ -252,7 +255,9 @@ export const deploymentLogService = {
    * 执行回滚到上一个版本
    * 回滚到当前部署的上一个成功的部署（用于详情页）
    */
-  async rollbackDeployment(deploymentId: string): Promise<{ success: boolean; message: string; rollbackLogId?: string }> {
+  async rollbackDeployment(
+    deploymentId: string
+  ): Promise<{ success: boolean; message: string; rollbackLogId?: string }> {
     const deployment = deploymentLogs.get(deploymentId);
     if (!deployment) {
       return { success: false, message: '部署记录不存在' };
@@ -265,7 +270,8 @@ export const deploymentLogService = {
     // 查找上一个成功的部署
     const allLogs = this.getAllDeploymentLogs(deployment.workflowId);
     const previousDeployment = allLogs.find(
-      (log) => log.id !== deploymentId && log.status === 'success' && log.createdAt < deployment.createdAt
+      log =>
+        log.id !== deploymentId && log.status === 'success' && log.createdAt < deployment.createdAt
     );
 
     if (!previousDeployment) {
@@ -315,7 +321,9 @@ export const deploymentLogService = {
    * 回滚到指定的部署记录
    * 回滚到指定部署记录对应的版本（用于列表中的回滚）
    */
-  async rollbackToDeployment(targetDeploymentId: string): Promise<{ success: boolean; message: string; rollbackLogId?: string }> {
+  async rollbackToDeployment(
+    targetDeploymentId: string
+  ): Promise<{ success: boolean; message: string; rollbackLogId?: string }> {
     const targetDeployment = deploymentLogs.get(targetDeploymentId);
     if (!targetDeployment) {
       return { success: false, message: '目标部署记录不存在' };

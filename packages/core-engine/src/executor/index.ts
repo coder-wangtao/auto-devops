@@ -77,6 +77,7 @@ export interface ExecutorOptions {
  */
 export function createWorkflowExecutor(options: ExecutorOptions = {}) {
   const { pluginExecutor, onStepStart, onStepComplete, onStepError } = options;
+  //放数据库，记录执行历史
   const executionHistory: Map<string, ExecutionResult[]> = new Map();
 
   /**

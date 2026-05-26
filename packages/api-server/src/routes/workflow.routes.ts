@@ -64,7 +64,10 @@ router.delete('/workflows/:id', (req, res) => {
 
 router.post('/workflows/:id/execute', async (req, res) => {
   try {
-    const { results, executionId } = await workflowService.executeWorkflow(req.params.id, req.body.context || {});
+    const { results, executionId } = await workflowService.executeWorkflow(
+      req.params.id,
+      req.body.context || {}
+    );
     res.json({ success: true, data: results, executionId, workflowId: req.params.id });
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message });
@@ -229,7 +232,11 @@ router.post('/deployment-logs/:id/rollback', async (req, res) => {
     if (!result.success) {
       return res.status(400).json({ success: false, message: result.message });
     }
-    res.json({ success: true, message: result.message, data: { rollbackLogId: result.rollbackLogId } });
+    res.json({
+      success: true,
+      message: result.message,
+      data: { rollbackLogId: result.rollbackLogId },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message });
   }
@@ -242,11 +249,14 @@ router.post('/deployment-logs/:id/rollback-to', async (req, res) => {
     if (!result.success) {
       return res.status(400).json({ success: false, message: result.message });
     }
-    res.json({ success: true, message: result.message, data: { rollbackLogId: result.rollbackLogId } });
+    res.json({
+      success: true,
+      message: result.message,
+      data: { rollbackLogId: result.rollbackLogId },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message });
   }
 });
 
 export default router;
-

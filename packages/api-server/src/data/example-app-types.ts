@@ -118,5 +118,5 @@ export function initializeExampleAppTypes(): AppType[] {
     },
   ];
 
-  return appTypes.map((data) => appTypeService.createAppType(data));
+  return appTypes.map(data => appTypeService.createAppType(data));
 }

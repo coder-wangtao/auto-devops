@@ -12,9 +12,9 @@ import { appTypeService } from '../services/app-type.service.js';
 export function initializeExampleApplications(): void {
   // 获取所有应用类型
   const appTypes = appTypeService.getAllAppTypes();
-  
+
   // 为 simple-deploy 工作流创建应用类型（如果不存在）
-  let simpleDeployType = appTypes.find((type) => type.name === '简单部署应用');
+  let simpleDeployType = appTypes.find(type => type.name === '简单部署应用');
   if (!simpleDeployType) {
     simpleDeployType = appTypeService.createAppType({
       name: '简单部署应用',
@@ -79,8 +79,8 @@ export function initializeExampleApplications(): void {
   // 为 simple-deploy 工作流创建应用
   const existingSimpleDeployApp = applicationService
     .getAllApplications()
-    .find((app) => app.name === '简单部署示例应用');
-  
+    .find(app => app.name === '简单部署示例应用');
+
   if (!existingSimpleDeployApp && simpleDeployType) {
     applicationService.createApplication({
       name: '简单部署示例应用',
@@ -93,7 +93,7 @@ export function initializeExampleApplications(): void {
   }
 
   // 为 ci-cd-pipeline 工作流创建应用类型（如果不存在）
-  let ciCdType = appTypes.find((type) => type.name === 'CI/CD流水线应用');
+  let ciCdType = appTypes.find(type => type.name === 'CI/CD流水线应用');
   if (!ciCdType) {
     ciCdType = appTypeService.createAppType({
       name: 'CI/CD流水线应用',
@@ -170,8 +170,8 @@ export function initializeExampleApplications(): void {
   // 为 ci-cd-pipeline 工作流创建应用
   const existingCiCdApp = applicationService
     .getAllApplications()
-    .find((app) => app.name === 'CI/CD流水线示例应用');
-  
+    .find(app => app.name === 'CI/CD流水线示例应用');
+
   if (!existingCiCdApp && ciCdType) {
     applicationService.createApplication({
       name: 'CI/CD流水线示例应用',

@@ -3,12 +3,7 @@
  */
 import { Request, Response, NextFunction } from 'express';
 
-export function errorHandler(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
   console.error('Error:', err);
   res.status(500).json({
     success: false,
@@ -22,4 +17,3 @@ export function notFoundHandler(req: Request, res: Response) {
     message: `路由 ${req.method} ${req.path} 不存在`,
   });
 }
-

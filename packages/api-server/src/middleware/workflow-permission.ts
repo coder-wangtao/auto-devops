@@ -62,11 +62,7 @@ export function validateWorkflowStepPermission(
 /**
  * 验证单个步骤的插件是否可以修改
  */
-export function validateStepPermission(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function validateStepPermission(req: Request, res: Response, next: NextFunction): void {
   try {
     const { applicationId, workflowId, stepId } = req.params;
 
